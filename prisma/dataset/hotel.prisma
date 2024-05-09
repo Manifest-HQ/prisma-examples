@@ -1,0 +1,48 @@
+// Give me a prisma schema for a relational database of Hotel with tables for reservations, rooms, services, and hotel managers
+model hotel {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  address       String
+  rooms         room[]
+  services      service[]
+  reservations  reservation[]
+  hotel_manager hotel_manager?
+}
+
+model room {
+  id        Int         @id @default(autoincrement())
+  number    String      @unique
+  capacity  Int
+  hotel_id  Int
+  hotel     hotel       @relation(fields: [hotel_id], references: [id])
+  bookings  reservation[]
+}
+
+model service {
+  id       Int    @id @default(autoincrement())
+  name     String
+  price    Float
+  hotel_id Int
+  hotel    hotel  @relation(fields: [hotel_id], references: [id])
+}
+
+model reservation {
+  id         Int       @id @default(autoincrement())
+  start_date DateTime
+  end_date   DateTime
+  guest_name String
+  room_id    Int
+  room       room      @relation(fields: [room_id], references: [id])
+  hotel_id   Int
+  hotel      hotel     @relation(fields: [hotel_id], references: [id])
+  @@index([guest_name, hotel_id,room_id])
+}
+
+model hotel_manager {
+  id       Int    @id @default(autoincrement())
+  name     String
+  ubication String
+  country String
+  hotel_id Int    @unique
+  hotel    hotel  @relation(fields: [hotel_id], references: [id])
+}
