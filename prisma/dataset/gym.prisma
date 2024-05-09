@@ -1,0 +1,50 @@
+// Give me a prisma schema for a relational database of Gym with tables for memberships, classes, trainers, personal, members and schedules
+model gyms {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  memberships   memberships[]
+  classes       classes[]
+  gym_trainers  gym_trainers[]
+}
+
+model memberships {
+  id        Int    @id @default(autoincrement())
+  gym_id    Int
+  member_id Int
+  start_date DateTime
+  end_date   DateTime?
+  gym        gyms   @relation(fields: [gym_id], references: [id])
+  member     members @relation(fields: [member_id], references: [id])
+}
+
+model classes {
+  id        Int    @id @default(autoincrement())
+  gym_id    Int
+  name      String
+  schedule  DateTime
+  gym       gyms   @relation(fields: [gym_id], references: [id])
+  trainers  trainers[]
+}
+
+model gym_trainers {
+  gym_id    Int
+  trainer_id Int
+  gym       gyms     @relation(fields: [gym_id], references: [id])
+  trainer   trainers @relation(fields: [trainer_id], references: [id])
+  @@id([gym_id, trainer_id])
+}
+
+model trainers {
+  id            Int            @id @default(autoincrement())
+  name          String
+  expertise     String
+  gym_trainers  gym_trainers[]
+  classes       classes[]
+}
+
+model members {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  email       String       @unique
+  memberships memberships[]
+}
