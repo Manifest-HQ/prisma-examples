@@ -1,0 +1,47 @@
+// Give me a prisma schema for a relational database of Government with tables for civil records, identification documents, and electoral management
+model Civil_Record {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  birth_certificate String             @unique
+  marriage_certificate String?         
+  death_certificate String?            
+  Person            Person             @relation(fields: [person_id], references: [id])
+
+  @@index([person_id])
+}
+
+model Identity_Document {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  passport_number   String             @unique
+  national_id       String             @unique
+  driver_license    String?            
+  Person            Person             @relation(fields: [person_id], references: [id])
+
+  @@index([person_id])
+}
+
+model Electoral_Management {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  voter_id          String             @unique
+  election_name     String
+  has_voted         Boolean            @default(false)
+  Person            Person             @relation(fields: [person_id], references: [id])
+
+  @@index([person_id])
+}
+
+model Person {
+  id                Int                @id @default(autoincrement())
+  identification_number String
+  first_name        String
+  last_name         String
+  date_of_birth     DateTime
+  Civil_Record      Civil_Record?
+  Identity_Document Identity_Document?
+  Electoral_Management Electoral_Management?
+
+  @@unique([identification_number])
+}
+
