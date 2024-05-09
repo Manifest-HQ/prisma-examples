@@ -1,0 +1,33 @@
+// Give me a prisma schema for a relational database of Insurance with tables for insurance policies, insured data, claims, and users
+model insurance_policy {
+  id                Int               @id @default(autoincrement())
+  policy_number     String            @unique
+  insured_id        Int
+  insured           insured_data      @relation(fields: [insured_id], references: [id])
+  claims            claim[]
+}
+
+model insured_data {
+  id                Int               @id @default(autoincrement())
+  full_name         String
+  date_of_birth     DateTime
+  policies          insurance_policy[]
+}
+
+model claim {
+  id                Int               @id @default(autoincrement())
+  claim_number      String            @unique
+  policy_id         Int
+  policy            insurance_policy  @relation(fields: [policy_id], references: [id])
+  claim_details     String
+  date_of_claim     DateTime
+  user_id           Int
+  user              user              @relation(fields: [user_id], references: [id])
+}
+
+model user {
+  id                Int               @id @default(autoincrement())
+  username          String            @unique
+  email             String            @unique
+  claims            claim[]
+}
