@@ -1,0 +1,52 @@
+// Give me a prisma schema for a relational database of an hospital with tables for patients, doctors, medical records, and appointments
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model hospital {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  address       String
+  patients      patient[]
+}
+
+model patient {
+  id            Int             @id @default(autoincrement())
+  name          String
+  date_of_birth DateTime
+  hospital_id   Int
+  medical_records medical_record[]
+  appointments  appointment[]
+  hospital      hospital         @relation(fields: [hospital_id], references: [id])
+}
+
+model medical_record {
+  id            Int             @id @default(autoincrement())
+  record_date   DateTime
+  details       String
+  patient_id    Int
+  patient       patient         @relation(fields: [patient_id], references: [id])
+}
+
+model appointment {
+  id            Int             @id @default(autoincrement())
+  appointment_date DateTime
+  purpose       String
+  patient_id    Int
+  doctor_id     Int
+  patient       patient         @relation(fields: [patient_id], references: [id])
+  doctor        doctor          @relation(fields: [doctor_id], references: [id])
+  @@index([patient_id, doctor_id])
+}
+
+model doctor {
+  id            Int             @id @default(autoincrement())
+  name          String
+  specialty     String
+  appointments  appointment[]
+}
