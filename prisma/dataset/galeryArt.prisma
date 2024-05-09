@@ -1,0 +1,44 @@
+// Give me a prisma schema for a relational database of galery art, with tables for  Artwork, artists and Exhibition
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model artwork {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String?
+  date              DateTime
+  artistId          Int
+  artist            artist              @relation(fields: [artistId], references: [id])
+  artwork_exhibitions artwork_exhibition[]
+}
+
+model artist {
+  id        Int       @id @default(autoincrement())
+  name      String
+  biography String?
+  artworks  artwork[]
+}
+
+model exhibition {
+  id              Int               @id @default(autoincrement())
+  name            String
+  start           DateTime
+  end             DateTime?
+  artwork_exhibitions artwork_exhibition[]
+}
+
+
+model artwork_exhibition {
+  artworkId     Int
+  exhibitionId  Int
+  artwork       artwork      @relation(fields: [artworkId], references: [id])
+  exhibition    exhibition   @relation(fields: [exhibitionId], references: [id])
+  @@id([artworkId, exhibitionId])
+}
+

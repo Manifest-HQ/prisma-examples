@@ -1,10 +1,31 @@
 node_modules
 # Keep environment variables out of version control
 .env
-prisma
+
+
 index.js
 package.json
 package-lock.json
 
 prompt.txt
+output.*
 
+eventos.prisma
+gimnasio.prisma
+gobierno.prisma
+hospital.prisma
+hotel.prisma
+inmobiliaria.prisma
+investigaciones.prisma
+mascotas.prisma
+parqueDiversiones.prisma
+redsocial.prisma
+resturante.prisma
+seguro.prisma
+software.prisma
+startup.prisma
+streaming.prisma
+telecomunicaciones.prisma
+transporte.prisma
+veterinaria.prisma
+viajes.prisma

@@ -1,0 +1,68 @@
+// Give me a prisma schema for a relational database of Schools with tables for Student information, grades, Subjects, Courses and class schedules
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model student {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  grades    grade[]
+  courses   course_students[]
+  @@index([name, email])
+}
+
+model grade {
+  id         Int      @id @default(autoincrement())
+  value      String
+  studentId  Int
+  subjectId  Int
+  student    student  @relation(fields: [studentId], references: [id])
+  subject    subject  @relation(fields: [subjectId], references: [id])
+  @@index([value])
+}
+
+model class_schedule {
+  id         Int      @id @default(autoincrement())
+  time       String
+  courseId   Int
+  course     course   @relation(fields: [courseId], references: [id])
+}
+
+model course {
+  id          Int             @id @default(autoincrement())
+  name        String
+  schedules   class_schedule[]
+  students    course_students[]    
+  subjects    course_subjects[]     
+}
+
+model subject {
+  id          Int       @id @default(autoincrement())
+  name        String
+  grades      grade[]
+  courses     course_subjects[]  
+}
+
+model course_students {
+  student   student @relation(fields: [studentId], references: [id])
+  studentId Int
+  course    course  @relation(fields: [courseId], references: [id])
+  courseId  Int
+
+  @@id([studentId, courseId])
+}
+
+model course_subjects {
+  course    course  @relation(fields: [courseId], references: [id])
+  courseId  Int
+  subject   subject @relation(fields: [subjectId], references: [id])
+  subjectId Int
+
+  @@id([courseId, subjectId])
+}

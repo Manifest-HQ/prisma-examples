@@ -1,0 +1,46 @@
+// Give me a prisma schema for a relational database of Design studios with tables fot Projects, clients, deliverables and state of delivers
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  clientId    Int
+  client      client       @relation(fields: [clientId], references: [id])
+  deliverables deliverable[]
+  @@index([name, description])
+}
+
+model client {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  projects project[]
+}
+
+model deliverable {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  projectId   Int
+  project     project  @relation(fields: [projectId], references: [id])
+  statusId    Int
+  status      status   @relation(fields: [statusId], references: [id])
+  @@index([title, description])
+}
+
+model status {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  deliverables deliverable[]
+  @@index([name, description])
+}
+

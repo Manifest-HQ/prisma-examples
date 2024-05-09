@@ -1,0 +1,66 @@
+// Give me a prisma schema for a relational database of an airline, with tables for flights, reservations, passengers, luggage and pilot.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model flight {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  origin      String
+  destination String
+  date        DateTime
+  bookings    booking[]
+  pilots      pilot_flight[]
+  @@index([destination, origin])
+}
+
+model booking {
+  id          Int       @id @default(autoincrement())
+  flightId    Int
+  passengerId Int
+  seat        String
+  class       String
+  flight      flight    @relation(fields: [flightId], references: [id])
+  passenger   passenger @relation(fields: [passengerId], references: [id])
+  luggage     luggage[]
+  @@index([passengerId])
+}
+
+model passenger {
+  id          Int       @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String    @unique
+  bookings    booking[]
+  @@index([firstName, lastName])
+}
+
+model luggage {
+  id          Int       @id @default(autoincrement())
+  bookingId   Int
+  weight      Float
+  description String
+  booking     booking   @relation(fields: [bookingId], references: [id])
+}
+
+model pilot {
+  id          Int       @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  license     String    @unique
+  flights     pilot_flight[]   
+  @@index([firstName, lastName])
+}
+
+model pilot_flight {
+  pilotId     Int
+  flightId    Int
+  pilot       pilot    @relation(fields: [pilotId], references: [id])
+  flight      flight   @relation(fields: [flightId], references: [id])
+  @@id([pilotId, flightId])
+}

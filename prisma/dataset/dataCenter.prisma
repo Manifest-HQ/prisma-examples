@@ -1,0 +1,46 @@
+// Give me a prisma schema for a relational database of Data centers with tables for Infrastructure monitoring, incident management, and resource optimization
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model data_center {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  location    String
+  servers     server[]
+  incidents   incident[]
+}
+
+model server {
+  id          Int       @id @default(autoincrement())
+  hostname    String    @unique
+  ipAddress   String    @unique
+  data_centerId Int
+  data_center  data_center @relation(fields: [data_centerId], references: [id])
+  resources   resource[]
+  incidents   incident[]
+}
+
+model resource {
+  id          Int       @id @default(autoincrement())
+  type        String
+  usage       Float
+  serverId    Int
+  server      server    @relation(fields: [serverId], references: [id])
+}
+
+model incident {
+  id          Int       @id @default(autoincrement())
+  description String
+  resolved    Boolean   @default(false)
+  serverId    Int?
+  server      server?   @relation(fields: [serverId], references: [id])
+  data_centerId Int?
+  data_center  data_center? @relation(fields: [data_centerId], references: [id])
+  @@index([description,resolved])
+}

@@ -1,0 +1,65 @@
+// Give me a prisma schema for a relational database of Conferences with tables for Participants, schedule, and ticket sales.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model participant {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  tickets   ticket[]
+  sessions  session[] @relation("sessionparticipants")
+}
+
+model session {
+  id              Int           @id @default(autoincrement())
+  title           String
+  startTime       DateTime
+  endTime         DateTime
+  speakerId       Int
+  speaker         speaker       @relation(fields: [speakerId], references: [id])
+  participants    participant[] @relation("sessionparticipants")
+  eventId         Int           
+  event           event         @relation(fields: [eventId], references: [id]) 
+}
+
+model speaker {
+  id        Int       @id @default(autoincrement())
+  name      String
+  bio       String
+  sessions  session[]
+}
+
+model ticket {
+  id            Int         @id @default(autoincrement())
+  type          String
+  price         Float
+  participantId Int
+  participant   participant @relation(fields: [participantId], references: [id])
+  eventId       Int
+  event         event       @relation(fields: [eventId], references: [id])
+  @@index([participantId, eventId])
+}
+
+model event {
+  id        Int       @id @default(autoincrement())
+  name      String
+  location  String
+  date      DateTime
+  tickets   ticket[]
+  sessions  session[]
+  logistics logistics[]
+  @@index([name, location, date])
+}
+
+model logistics {
+  id          Int     @id @default(autoincrement())
+  description String
+  eventId     Int
+  event       event   @relation(fields: [eventId], references: [id])
+}

@@ -1,0 +1,33 @@
+// Give me a prisma schema for a relational database of Libraries with tables for Book catalog, loans, and users
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model book {
+  id        Int      @id @default(autoincrement())
+  title     String
+  author    String
+  loans     loan[]
+  @@index([title,author])
+}
+
+model user {
+  id        Int      @id @default(autoincrement())
+  name      String
+  loans     loan[]
+}
+
+model loan {
+  id        Int      @id @default(autoincrement())
+  bookId    Int
+  userId    Int
+  book      book     @relation(fields: [bookId], references: [id])
+  user      user     @relation(fields: [userId], references: [id])
+  loanDate  DateTime
+  returnDate DateTime?
+}
