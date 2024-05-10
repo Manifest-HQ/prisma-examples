@@ -1,4 +1,4 @@
-//Give me a prisma schema for a relational database of {} with tables for {}
+//Give me a prisma schema for a relational database of an startup with tables for users, projects, clients, metrics, and market analysis
 generator client {
   provider = "prisma-client-js"
 }
