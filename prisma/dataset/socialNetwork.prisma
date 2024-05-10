@@ -1,0 +1,67 @@
+// Give me a prisma schema for a relational database of social network with tables for social_network, user, post, comment, like and friendship
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model social_network {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  users     user[]
+}
+
+model user {
+  id              Int         @id @default(autoincrement())
+  username        String      @unique
+  email           String      @unique
+  social_network_id Int
+  social_network  social_network @relation(fields: [social_network_id], references: [id])
+  posts           post[]
+  comments        comment[]
+  likes           like[]
+  friendships     friendship[] @relation("user_friendships")
+  friend_of       friendship[] @relation("friend_friendships")
+  @@index([username, email])
+}
+
+model post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  user_id   Int
+  user      user     @relation(fields: [user_id], references: [id])
+  comments  comment[]
+  likes     like[]
+  @@index([title, content])
+}
+
+model comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  user_id   Int
+  user      user     @relation(fields: [user_id], references: [id])
+  post_id   Int
+  post      post     @relation(fields: [post_id], references: [id])
+}
+
+model like {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      user     @relation(fields: [user_id], references: [id])
+  post_id   Int
+  post      post     @relation(fields: [post_id], references: [id])
+}
+
+model friendship {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  friend_id   Int
+  user        user     @relation(name: "user_friendships", fields: [user_id], references: [id])
+  friend      user     @relation(name: "friend_friendships", fields: [friend_id], references: [id])
+  @@unique([user_id, friend_id])
+}
