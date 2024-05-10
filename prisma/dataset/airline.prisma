@@ -21,11 +21,11 @@ model flight {
 
 model booking {
   id          Int       @id @default(autoincrement())
-  flightId    Int
+  flight_id    Int
   passengerId Int
   seat        String
   class       String
-  flight      flight    @relation(fields: [flightId], references: [id])
+  flight      flight    @relation(fields: [flight_id], references: [id])
   passenger   passenger @relation(fields: [passengerId], references: [id])
   luggage     luggage[]
   @@index([passengerId])
@@ -33,11 +33,11 @@ model booking {
 
 model passenger {
   id          Int       @id @default(autoincrement())
-  firstName   String
-  lastName    String
+  first_name   String
+  last_name    String
   email       String    @unique
   bookings    booking[]
-  @@index([firstName, lastName])
+  @@index([first_name, last_name])
 }
 
 model luggage {
@@ -50,17 +50,17 @@ model luggage {
 
 model pilot {
   id          Int       @id @default(autoincrement())
-  firstName   String
-  lastName    String
+  first_name   String
+  last_name    String
   license     String    @unique
   flights     pilot_flight[]   
-  @@index([firstName, lastName])
+  @@index([first_name, last_name])
 }
 
 model pilot_flight {
-  pilotId     Int
-  flightId    Int
-  pilot       pilot    @relation(fields: [pilotId], references: [id])
-  flight      flight   @relation(fields: [flightId], references: [id])
-  @@id([pilotId, flightId])
+  pilot_id     Int
+  flight_id    Int
+  pilot       pilot    @relation(fields: [pilot_id], references: [id])
+  flight      flight   @relation(fields: [flight_id], references: [id])
+  @@id([pilot_id, flight_id])
 }

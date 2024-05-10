@@ -12,8 +12,8 @@ model project {
   id          Int          @id @default(autoincrement())
   name        String
   description String
-  clientId    Int
-  client      client       @relation(fields: [clientId], references: [id])
+  client_id    Int
+  client      client       @relation(fields: [client_id], references: [id])
   deliverables deliverable[]
   @@index([name, description])
 }
@@ -29,10 +29,10 @@ model deliverable {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  projectId   Int
-  project     project  @relation(fields: [projectId], references: [id])
-  statusId    Int
-  status      status   @relation(fields: [statusId], references: [id])
+  project_id   Int
+  project     project  @relation(fields: [project_id], references: [id])
+  status_id    Int
+  status      status   @relation(fields: [status_id], references: [id])
   @@index([title, description])
 }
 

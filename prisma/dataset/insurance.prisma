@@ -1,4 +1,13 @@
 // Give me a prisma schema for a relational database of Insurance with tables for insurance policies, insured data, claims, and users
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model insurance_policy {
   id                Int               @id @default(autoincrement())
   policy_number     String            @unique

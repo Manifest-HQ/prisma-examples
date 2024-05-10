@@ -20,18 +20,18 @@ model student {
 model grade {
   id         Int      @id @default(autoincrement())
   value      String
-  studentId  Int
-  subjectId  Int
-  student    student  @relation(fields: [studentId], references: [id])
-  subject    subject  @relation(fields: [subjectId], references: [id])
+  student_id  Int
+  subject_id  Int
+  student    student  @relation(fields: [student_id], references: [id])
+  subject    subject  @relation(fields: [subject_id], references: [id])
   @@index([value])
 }
 
 model class_schedule {
   id         Int      @id @default(autoincrement())
   time       String
-  courseId   Int
-  course     course   @relation(fields: [courseId], references: [id])
+  course_id   Int
+  course     course   @relation(fields: [course_id], references: [id])
 }
 
 model course {
@@ -50,19 +50,19 @@ model subject {
 }
 
 model course_students {
-  student   student @relation(fields: [studentId], references: [id])
-  studentId Int
-  course    course  @relation(fields: [courseId], references: [id])
-  courseId  Int
+  student   student @relation(fields: [student_id], references: [id])
+  student_id Int
+  course    course  @relation(fields: [course_id], references: [id])
+  course_id  Int
 
-  @@id([studentId, courseId])
+  @@id([student_id, course_id])
 }
 
 model course_subjects {
-  course    course  @relation(fields: [courseId], references: [id])
-  courseId  Int
-  subject   subject @relation(fields: [subjectId], references: [id])
-  subjectId Int
+  course    course  @relation(fields: [course_id], references: [id])
+  course_id  Int
+  subject   subject @relation(fields: [subject_id], references: [id])
+  subject_id Int
 
-  @@id([courseId, subjectId])
+  @@id([course_id, subject_id])
 }

@@ -1,4 +1,13 @@
 // Give me a prisma schema for a relational database of Government with tables for civil records, identification documents, and electoral management
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model civil_record {
   id                  Int                @id @default(autoincrement())
   person_id           Int                @unique
@@ -38,5 +47,4 @@ model person {
   civil_record          civil_record?
   identity_document     identity_document?
   electoral_management  electoral_management?
-  @@unique([identification_number])
 }

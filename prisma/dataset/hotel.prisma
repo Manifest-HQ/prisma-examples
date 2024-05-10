@@ -1,4 +1,13 @@
 // Give me a prisma schema for a relational database of Hotel with tables for reservations, rooms, services, and hotel managers
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model hotel {
   id            Int            @id @default(autoincrement())
   name          String         @unique

@@ -26,8 +26,8 @@ model cinema {
 model hall {
   id          Int       @id @default(autoincrement())
   name        String
-  cinemaId    Int
-  cinema      cinema    @relation(fields: [cinemaId], references: [id])
+  cinema_id    Int
+  cinema      cinema    @relation(fields: [cinema_id], references: [id])
   seats       seat[]
   showtimes   showtime[]
 }
@@ -35,8 +35,8 @@ model hall {
 model seat {
   id          Int       @id @default(autoincrement())
   number      String
-  hallId      Int
-  hall        hall      @relation(fields: [hallId], references: [id])
+  hall_id      Int
+  hall        hall      @relation(fields: [hall_id], references: [id])
   tickets     ticket[]
 }
 
@@ -45,19 +45,19 @@ model showtime {
   startTime   DateTime
   movieId     Int
   movie       movie     @relation(fields: [movieId], references: [id])
-  hallId      Int
-  hall        hall      @relation(fields: [hallId], references: [id])
+  hall_id      Int
+  hall        hall      @relation(fields: [hall_id], references: [id])
   tickets     ticket[]
 }
 
 model ticket {
   id          Int       @id @default(autoincrement())
-  customerId  Int?
-  customer    customer? @relation(fields: [customerId], references: [id])
-  showtimeId  Int
-  showtime    showtime  @relation(fields: [showtimeId], references: [id])
-  seatId      Int
-  seat        seat      @relation(fields: [seatId], references: [id])
+  customer_id  Int?
+  customer    customer? @relation(fields: [customer_id], references: [id])
+  showtim_id  Int
+  showtime    showtime  @relation(fields: [showtim_id], references: [id])
+  seat_id      Int
+  seat        seat      @relation(fields: [seat_id], references: [id])
   price       Float
 }
 

@@ -19,8 +19,8 @@ model project {
   id          Int      @id @default(autoincrement())
   name        String
   description String
-  clientId    Int
-  client      client   @relation(fields: [clientId], references: [id])
+  client_id    Int
+  client      client   @relation(fields: [client_id], references: [id])
   results     result[]
   @@index([name, description])
 }
@@ -28,8 +28,8 @@ model project {
 model result {
   id          Int      @id @default(autoincrement())
   outcome     String
-  projectId   Int
-  project     project  @relation(fields: [projectId], references: [id])
+  project_id   Int
+  project     project  @relation(fields: [project_id], references: [id])
   @@index([outcome])
 }
 

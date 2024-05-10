@@ -1,4 +1,13 @@
 // Give me a prisma schema for a relational database of Gym with tables for memberships, classes, trainers, personal, members and schedules
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model gyms {
   id            Int            @id @default(autoincrement())
   name          String         @unique

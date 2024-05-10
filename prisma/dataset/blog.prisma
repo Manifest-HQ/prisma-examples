@@ -10,21 +10,21 @@ datasource db {
 
 model post {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   title     String   @db.VarChar(255)
   content   String?
   published Boolean  @default(false)
-  author    user     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  author    user     @relation(fields: [author_id], references: [id])
+  author_id  Int
   @@index([title,content])
 }
 
 model profile {
   id     Int     @id @default(autoincrement())
   bio    String?
-  user   user    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+  user   user    @relation(fields: [user_id], references: [id])
+  user_id Int     @unique
 }
 
 model user {

@@ -29,12 +29,12 @@ model category {
 }
 
 model product_category {
-  productId Int
-  product   product @relation(fields: [productId], references: [id])
-  categoryId Int
-  category  category @relation(fields: [categoryId], references: [id])
+  product_id Int
+  product   product @relation(fields: [product_id], references: [id])
+  category_id Int
+  category  category @relation(fields: [category_id], references: [id])
 
-  @@id([productId, categoryId])
+  @@id([product_id, category_id])
 }
 
 
@@ -47,24 +47,24 @@ model customer {
 
 model order {
   id         Int         @id @default(autoincrement())
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
   status     order_status
-  customer   customer    @relation(fields: [customerId], references: [id])
-  customerId Int
+  customer   customer    @relation(fields: [customer_id], references: [id])
+  customer_id Int
   items      order_item[]
 }
 
 
 model order_item {
   id        Int     @id @default(autoincrement())
-  order     order   @relation(fields: [orderId], references: [id])
-  orderId   Int
-  product   product @relation(fields: [productId], references: [id])
-  productId Int
+  order     order   @relation(fields: [order_id], references: [id])
+  order_id   Int
+  product   product @relation(fields: [product_id], references: [id])
+  product_id Int
   quantity  Int
 
-  @@unique([orderId, productId])
+  @@unique([order_id, product_id])
 }
 
 enum order_status {

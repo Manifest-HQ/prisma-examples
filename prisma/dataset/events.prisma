@@ -1,4 +1,4 @@
-// Give me a prisma schema for a relational database of {} with tables for {} 
+// Give me a prisma schema for a relational database of events with tables for participants, agenda, tickets, and for logistic employees
 generator client {
   provider = "prisma-client-js"
 }
