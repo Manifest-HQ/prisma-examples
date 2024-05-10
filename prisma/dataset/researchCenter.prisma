@@ -1,0 +1,55 @@
+// Give me a prisma schema for a relational database of research center with tables for research_center, experiment, publication, collaboration and partner
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model research_center {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  location        String
+  experiments     experiment[]      
+  publications    publication[]     
+  collaborations  collaboration[]   
+}
+
+model experiment {
+  id                Int             @id @default(autoincrement())
+  title             String
+  date_conducted    DateTime
+  result            String
+  research_center_id Int            @unique
+  research_center   research_center @relation(fields: [research_center_id], references: [id])
+  publications      publication[]   
+}
+
+model publication {
+  id                Int             @id @default(autoincrement())
+  title             String          @unique
+  published_date    DateTime
+  research_center_id Int
+  research_center   research_center @relation(fields: [research_center_id], references: [id])
+  
+  experiments       experiment[]    
+}
+
+model collaboration {
+  id                Int             @id @default(autoincrement())
+  name              String
+  start_date        DateTime
+  end_date          DateTime?
+  research_center_id Int
+  research_center   research_center @relation(fields: [research_center_id], references: [id])
+  partners          partner[]       
+}
+
+model partner {
+  id                Int             @id @default(autoincrement())
+  name              String          @unique
+  collaboration_id  Int
+  collaboration     collaboration   @relation(fields: [collaboration_id], references: [id])
+}
