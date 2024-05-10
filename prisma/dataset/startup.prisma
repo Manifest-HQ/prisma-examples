@@ -1,0 +1,56 @@
+//Give me a prisma schema for a relational database of {} with tables for {}
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String
+  projects      project[]       
+  metrics       metric[]        
+}
+
+model client {
+  id            Int             @id @default(autoincrement())
+  name          String
+  email         String          @unique
+  projects      client_projects[]       
+}
+
+model project {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  user_id       Int             
+  user          user            @relation(fields: [user_id], references: [id])
+  clients       client_projects[]        
+}
+
+model client_projects {
+  client_id     Int
+  project_id    Int
+  client        client          @relation(fields: [client_id], references: [id])
+  project       project         @relation(fields: [project_id], references: [id])
+  @@id([client_id, project_id])
+}
+
+model metric {
+  id            Int             @id @default(autoincrement())
+  user_id       Int            
+  data_point    String
+  value         Float
+  user          user            @relation(fields: [user_id], references: [id])
+}
+
+model market_analysis {
+  id            Int             @id @default(autoincrement())
+  topic         String
+  description   String
+  insights      String
+}
