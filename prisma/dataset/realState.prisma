@@ -1,0 +1,43 @@
+// Give me a prisma schema for a relational database of {} with tables for {} 
+model real_estate_agency {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  properties    property[]
+  clients       client[]
+  lease_contracts lease_contract[]
+}
+
+model property {
+  id            Int             @id @default(autoincrement())
+  address       String          @unique
+  description   String
+  price         Float
+  agency_id     Int
+  real_estate_agency real_estate_agency @relation(fields: [agency_id], references: [id])
+  lease_contracts lease_contract[]
+  @@index([address, description, price])
+}
+
+model client {
+  id            Int             @id @default(autoincrement())
+  name          String
+  email         String          @unique
+  phone_number  String          @unique
+  real_estate_agency_id Int
+  real_estate_agency real_estate_agency @relation(fields: [real_estate_agency_id], references: [id])
+  lease_contracts lease_contract[]
+}
+
+model lease_contract {
+  id            Int             @id @default(autoincrement())
+  start_date    DateTime
+  end_date      DateTime
+  property_id   Int
+  client_id     Int
+  real_estate_agency_id Int
+  property      property        @relation(fields: [property_id], references: [id])
+  client        client          @relation(fields: [client_id], references: [id])
+  real_estate_agency real_estate_agency @relation(fields: [real_estate_agency_id], references: [id])
+  @@index([property_id, client_id, real_estate_agency_id])
+}
+
