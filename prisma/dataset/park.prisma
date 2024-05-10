@@ -1,0 +1,59 @@
+// Give me a prisma schema for a relational database of park with tables for amusement_park, entry, attraction, client, maintenance_log
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model amusement_park {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  location          String
+  entries           entry[]
+  attractions       attraction[]
+  clients           client[]
+}
+
+model entry {
+  id                Int                @id @default(autoincrement())
+  date              DateTime
+  client_id         Int
+  client            client             @relation(fields: [client_id], references: [id])
+  ticket_type       String
+  amusement_park_id Int                // Add this line
+  amusement_park    amusement_park     @relation(fields: [amusement_park_id], references: [id])  // And this line
+}
+
+model attraction {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  type              String
+  status            String
+  maintenance_logs  maintenance_log[]
+  amusement_park_id Int                // Add this line
+  amusement_park    amusement_park     @relation(fields: [amusement_park_id], references: [id])  // And this line
+}
+
+model client {
+  id                Int                @id @default(autoincrement())
+  name              String
+  email             String             @unique
+  phone_number      String             @unique
+  entries           entry[]
+  maintenance_logs  maintenance_log[]
+  amusement_park_id Int?               // Add this line
+  amusement_park    amusement_park?    @relation(fields: [amusement_park_id], references: [id])  // And this line
+}
+
+model maintenance_log {
+  id                Int                @id @default(autoincrement())
+  date              DateTime
+  description       String
+  attraction_id     Int
+  attraction        attraction         @relation(fields: [attraction_id], references: [id])
+  client_id         Int
+  client            client             @relation(fields: [client_id], references: [id])
+}
