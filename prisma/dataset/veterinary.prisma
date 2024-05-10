@@ -1,0 +1,55 @@
+// Give me a prisma schema for a relational database of veterinary services with tables for pets, owners, vets, appointments, and medical histories
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model owner {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String?
+  pets      pet[]
+}
+
+model pet {
+  id            Int              @id @default(autoincrement())
+  name          String
+  species       String
+  breed         String?
+  birth_date    DateTime?
+  owner_id      Int
+  owner         owner            @relation(fields: [owner_id], references: [id])
+  appointments  appointment[]
+  medical_records medical_record[]
+}
+
+model vet {
+  id        Int           @id @default(autoincrement())
+  name      String
+  email     String        @unique
+  phone     String?
+  appointments appointment[]
+}
+
+model appointment {
+  id          Int          @id @default(autoincrement())
+  date        DateTime
+  pet_id      Int
+  pet         pet          @relation(fields: [pet_id], references: [id])
+  vet_id      Int
+  vet         vet          @relation(fields: [vet_id], references: [id])
+  description String?
+}
+
+model medical_record {
+  id          Int       @id @default(autoincrement())
+  pet_id      Int
+  pet         pet       @relation(fields: [pet_id], references: [id])
+  record_date DateTime
+  details     String
+}
