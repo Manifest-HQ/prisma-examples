@@ -1,0 +1,56 @@
+// Give me a prisma schema for a relational database of {} with tables for {} 
+model restaurant {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  address     String
+  reservations reservation[]
+  menus       menu[]
+  orders      order[]
+}
+
+model reservation {
+  id            Int       @id @default(autoincrement())
+  datetime      DateTime
+  customer_name String
+  restaurant_id Int
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [id])
+  @@index([datetime, customer_name])
+}
+
+model menu {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  items         menu_item[]
+  restaurant_id Int
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [id])
+}
+
+model menu_item {
+  id        Int    @id @default(autoincrement())
+  name      String
+  price     Float
+  menu_id   Int
+  menu      menu   @relation(fields: [menu_id], references: [id])
+  orders    order_item[]
+  @@index([name])
+}
+
+model order {
+  id            Int         @id @default(autoincrement())
+  status        String
+  total_price   Float
+  created_at    DateTime    @default(now())
+  restaurant_id Int
+  restaurant    restaurant  @relation(fields: [restaurant_id], references: [id])
+  items         order_item[]
+}
+
+model order_item {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  item_id   Int
+  order_id  Int
+  item      menu_item @relation(fields: [item_id], references: [id])
+  order     order    @relation(fields: [order_id], references: [id])
+}
