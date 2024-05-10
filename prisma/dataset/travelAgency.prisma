@@ -1,0 +1,58 @@
+// Give me a prisma schema for a relational database of travel agency with tables for agencies, packages, clients, reservations, and bookings
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model agency {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  email         String         @unique
+  phone         String?
+  packages      package_[]
+  reservations  reservation[]
+}
+
+model package_ {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  duration    Int          
+  agency_id   Int
+  agency      agency       @relation(fields: [agency_id], references: [id])
+  bookings    booking[]
+}
+
+model client {
+  id           Int           @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  email        String        @unique
+  phone        String?
+  reservations reservation[]
+}
+
+model reservation {
+  id         Int       @id @default(autoincrement())
+  date       DateTime
+  client_id  Int
+  client     client    @relation(fields: [client_id], references: [id])
+  booking_id Int
+  booking    booking   @relation(fields: [booking_id], references: [id])
+  agency_id  Int
+  agency     agency    @relation(fields: [agency_id], references: [id])
+}
+
+model booking {
+  id         Int       @id @default(autoincrement())
+  date       DateTime
+  package_id Int
+  package    package_  @relation(fields: [package_id], references: [id])
+  guests     Int
+  reservations reservation[]
+}
