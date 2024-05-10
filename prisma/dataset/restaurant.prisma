@@ -1,4 +1,13 @@
-// Give me a prisma schema for a relational database of {} with tables for {} 
+// Give me a prisma schema for a relational database of restaurant with tables for restaurant, reservation, menu, menu_item, order and order_item
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model restaurant {
   id          Int      @id @default(autoincrement())
   name        String   @unique

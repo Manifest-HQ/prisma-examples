@@ -1,11 +1,11 @@
 // Give me a prisma schema for a relational database of pet shop with tables for store, product, customer, category and purchase
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model store {

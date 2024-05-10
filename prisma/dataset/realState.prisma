@@ -1,4 +1,13 @@
-// Give me a prisma schema for a relational database of {} with tables for {} 
+// Give me a prisma schema for a relational database of real estate agency with tables for real_estate_agency, property, client, lease_contract
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model real_estate_agency {
   id            Int             @id @default(autoincrement())
   name          String          @unique
