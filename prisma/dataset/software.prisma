@@ -1,0 +1,61 @@
+// Give me a prisma schema for a relational database of software company with tables for software_company, license, users and project
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model company {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  licenses    license[]
+  users       user[]
+  projects    project[]
+}
+
+model license {
+  id          Int             @id @default(autoincrement())
+  key         String          @unique
+  company_id  Int
+  company     company         @relation(fields: [company_id], references: [id])
+  userLicenses user_license[]
+}
+
+model user {
+  id          Int             @id @default(autoincrement())
+  email       String          @unique
+  company_id  Int
+  company     company         @relation(fields: [company_id], references: [id])
+  userLicenses user_license[]
+  projects    user_projects[]      
+}
+
+model user_license {
+  user_id    Int
+  license_id Int
+  user       user             @relation(fields: [user_id], references: [id])
+  license    license          @relation(fields: [license_id], references: [id])
+
+  @@id([user_id, license_id])
+}
+
+model project {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  company_id  Int
+  company     company   @relation(fields: [company_id], references: [id])
+  users       user_projects[]    
+}
+
+model user_projects {
+  user_id    Int
+  project_id Int
+  user       user      @relation(fields: [user_id], references: [id])
+  project    project   @relation(fields: [project_id], references: [id])
+
+  @@id([user_id, project_id])
+}
