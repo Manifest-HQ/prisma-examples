@@ -1,0 +1,48 @@
+// Give me a prisma schema for a relational database of transport services with tables for routes, schedules, fares, and bookings
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model route {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  schedules   schedule[]
+  fares       fare[]
+  @@index([name])
+}
+
+model schedule {
+  id        Int       @id @default(autoincrement())
+  route_id  Int
+  time      String
+  route     route     @relation(fields: [route_id], references: [id])
+  bookings  booking[]
+}
+
+model fare {
+  id        Int       @id @default(autoincrement())
+  route_id  Int
+  price     Float
+  route     route     @relation(fields: [route_id], references: [id])
+}
+
+model user {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  bookings  booking[]
+  @@index([username])
+}
+
+model booking {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  schedule_id Int
+  user        user      @relation(fields: [user_id], references: [id])
+  schedule    schedule  @relation(fields: [schedule_id], references: [id])
+  @@unique([user_id, schedule_id])
+}
