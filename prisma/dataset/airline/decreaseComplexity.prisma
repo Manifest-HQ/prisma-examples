@@ -1,0 +1,31 @@
+// make more simple the schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  flightId  Int
+  customerId Int
+  Flight    Flight   @relation(fields: [flightId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Flight {
+  id       Int      @id @default(autoincrement())
+  pilotId  Int
+  Pilot    Pilot    @relation(fields: [pilotId], references: [id])
+  Bookings Booking[]
+  date     DateTime
+}
+
+model Pilot {
+  id       Int      @id @default(autoincrement())
+  name     String
+  Flights  Flight[]
+}
