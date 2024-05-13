@@ -1,0 +1,29 @@
+// Delete the relation between user and profile
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model post {
+  id        Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  author    user     @relation(fields: [author_id], references: [id])
+  author_id  Int
+  @@index([title,content])
+}
+
+model user {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  bio    String?
+  posts   post[]
+}

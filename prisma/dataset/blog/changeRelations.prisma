@@ -1,0 +1,44 @@
+//change the rellation between user and post to many to many
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model post {
+  id        Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  author    user_post[]
+  author_id  Int
+  @@index([title,content])
+}
+model user_post {
+  id     Int     @id @default(autoincrement())
+  user_id Int
+  user    user    @relation(fields: [user_id], references: [id])
+  post_id Int
+  post    post    @relation(fields: [post_id], references: [id])
+}
+
+model profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   user    @relation(fields: [user_id], references: [id])
+  user_id Int     @unique
+}
+
+model user {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  posts   user_post[]
+  profile profile?
+}
+
