@@ -1,0 +1,78 @@
+//change the relation between ticket and customer to many to many
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model movie {
+  id          Int       @id @default(autoincrement())
+  title       String
+  duration    Int       
+  showtimes   showtime[]
+}
+
+model cinema {
+  id          Int       @id @default(autoincrement())
+  name        String
+  location    String
+  halls       hall[]
+}
+
+model hall {
+  id          Int       @id @default(autoincrement())
+  name        String
+  cinema_id    Int
+  cinema      cinema    @relation(fields: [cinema_id], references: [id])
+  seats       seat[]
+  showtimes   showtime[]
+}
+
+model seat {
+  id          Int       @id @default(autoincrement())
+  number      String
+  hall_id      Int
+  hall        hall      @relation(fields: [hall_id], references: [id])
+  tickets     ticket[]
+}
+
+model showtime {
+  id          Int       @id @default(autoincrement())
+  startTime   DateTime
+  movieId     Int
+  movie       movie     @relation(fields: [movieId], references: [id])
+  hall_id      Int
+  hall        hall      @relation(fields: [hall_id], references: [id])
+  tickets     ticket[]
+}
+
+model ticket {
+  id          Int       @id @default(autoincrement())
+  customer_id  Int?
+  customer    customer_ticket[]
+  showtime_id Int
+  showtime    showtime  @relation(fields: [showtime_id], references: [id])
+  seat_id      Int
+  seat        seat      @relation(fields: [seat_id], references: [id])
+  price       Float
+}
+
+model customer {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  tickets     customer_ticket[]
+}
+
+model customer_ticket {
+  id          Int       @id @default(autoincrement())
+  customer_id  Int
+  customer    customer  @relation(fields: [customer_id], references: [id])
+  ticket_id   Int
+  ticket      ticket    @relation(fields: [ticket_id], references: [id])
+}
+
