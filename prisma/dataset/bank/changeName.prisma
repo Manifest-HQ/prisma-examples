@@ -1,0 +1,68 @@
+// change the name of the table clients to clients
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model clients {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String?
+  accounts  account[]
+}
+
+model account {
+  id                  Int           @id @default(autoincrement())
+  clients_id          Int
+  clients            clients      @relation(fields: [clients_id], references: [id])
+  type                String       
+  balance             Float
+  created_at           DateTime      @default(now())
+  transactions_origin  transaction[] @relation("Origin")
+  transactions_destiny transaction[] @relation("Destiny")
+  branch_id            Int           
+  branch              branch        @relation(fields: [branch_id], references: [id])
+  loanId              Int
+  loan                loan          @relation(fields: [loanId], references: [id])
+}
+
+model transaction {
+  id              Int      @id @default(autoincrement())
+  account_origin_id Int
+  account_destiny_id Int
+  account_origin    account @relation(name: "Origin", fields: [account_origin_id], references: [id])
+  account_destiny   account @relation(name: "Destiny", fields: [account_destiny_id], references: [id])
+  amount           Float
+  date             DateTime @default(now())
+}
+
+model employee {
+  id       Int    @id @default(autoincrement())
+  name     String
+  position String
+  email    String @unique
+  branch   branch @relation(fields: [branch_id], references: [id])
+  branch_id Int
+}
+
+model branch {
+  id       Int        @id @default(autoincrement())
+  name     String
+  location String
+  employees employee[]
+  accounts  account[]
+}
+
+model loan {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  interest_rate Float
+  start_date   DateTime
+  due_date     DateTime
+  account     account[]
+}

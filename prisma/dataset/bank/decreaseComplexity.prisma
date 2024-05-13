@@ -1,0 +1,51 @@
+// make more simple the schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String?
+  accounts  account[]
+}
+
+model account {
+  id                  Int           @id @default(autoincrement())
+  customer_id          Int
+  customer            customer      @relation(fields: [customer_id], references: [id])
+  type                String       
+  balance             Float
+  created_at           DateTime      @default(now())
+  transactions_origin  transaction[] @relation("Origin")
+  transactions_destiny transaction[] @relation("Destiny")
+  amount      Float
+  interest_rate Float
+  start_date   DateTime
+  due_date     DateTime
+}
+
+model transaction {
+  id              Int      @id @default(autoincrement())
+  account_origin_id Int
+  account_destiny_id Int
+  account_origin    account @relation(name: "Origin", fields: [account_origin_id], references: [id])
+  account_destiny   account @relation(name: "Destiny", fields: [account_destiny_id], references: [id])
+  amount           Float
+  date             DateTime @default(now())
+}
+
+model employee {
+  id       Int    @id @default(autoincrement())
+  name     String
+  position String
+  email    String @unique
+}
+
+
