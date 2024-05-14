@@ -1,4 +1,4 @@
-// change the name of the table tasks to tasks
+// change the name of the table deliberable to tasks
 generator client {
   provider = "prisma-client-js"
 }
