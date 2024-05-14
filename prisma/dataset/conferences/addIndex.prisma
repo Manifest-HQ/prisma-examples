@@ -1,0 +1,73 @@
+// add an index in booking participant name and email
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model participant {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  tickets   ticket[]
+  sessions  session_participant[] 
+  @@index([name, email])
+}
+
+model session {
+  id              Int           @id @default(autoincrement())
+  title           String
+  star_time       DateTime
+  end_time         DateTime
+  speaker_id       Int
+  speaker         speaker       @relation(fields: [speaker_id], references: [id])
+  participants    session_participant[] 
+  event_id         Int           
+  event           event         @relation(fields: [event_id], references: [id]) 
+}
+
+model session_participant {
+  id Int @id @default(autoincrement())
+  session_id Int 
+  session    session @relation(fields: [session_id], references: [id])
+  participant_id Int
+  participant   participant @relation(fields: [participant_id], references: [id])
+}
+model speaker {
+  id        Int       @id @default(autoincrement())
+  name      String
+  bio       String
+  sessions  session[]
+}
+
+model ticket {
+  id            Int         @id @default(autoincrement())
+  type          String
+  price         Float
+  participant_id Int
+  participant   participant @relation(fields: [participant_id], references: [id])
+  event_id       Int
+  event         event       @relation(fields: [event_id], references: [id])
+  @@index([participant_id, event_id])
+}
+
+model event {
+  id        Int       @id @default(autoincrement())
+  name      String
+  location  String
+  date      DateTime
+  tickets   ticket[]
+  sessions  session[]
+  logistics logistics[]
+  @@index([name, location, date])
+}
+
+model logistics {
+  id          Int     @id @default(autoincrement())
+  description String
+  event_id     Int
+  event       event   @relation(fields: [event_id], references: [id])
+}

@@ -1,0 +1,56 @@
+// make more simple the schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model participant {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  tickets   ticket[]
+  sessions  session_participant[] 
+}
+
+model session {
+  id              Int           @id @default(autoincrement())
+  title           String
+  location        String
+  star_time       DateTime
+  end_time         DateTime
+  speaker_id       Int
+  speaker         speaker       @relation(fields: [speaker_id], references: [id])
+  participants    session_participant[]       
+  ticket           ticket[]    
+}
+
+model session_participant {
+  id Int @id @default(autoincrement())
+  session_id Int 
+  session    session @relation(fields: [session_id], references: [id])
+  participant_id Int
+  participant   participant @relation(fields: [participant_id], references: [id])
+}
+
+model speaker {
+  id        Int       @id @default(autoincrement())
+  name      String
+  bio       String
+  sessions  session[]
+}
+
+model ticket {
+  id            Int         @id @default(autoincrement())
+  type          String
+  price         Float
+  participant_id Int
+  participant   participant @relation(fields: [participant_id], references: [id])
+  session_id       Int
+  session         session       @relation(fields: [session_id], references: [id])
+  @@index([participant_id, session_id])
+}
+
