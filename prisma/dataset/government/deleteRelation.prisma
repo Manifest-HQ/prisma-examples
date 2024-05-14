@@ -28,13 +28,6 @@ model identity_document {
   @@index([person_id])
 }
 
-model electoral_management {
-  id                Int                @id @default(autoincrement())
-  voter_id          String             @unique
-  election_name     String
-  has_voted         Boolean            @default(false)
-}
-
 model person {
   id                    Int                @id @default(autoincrement())
   identification_number String             @unique
