@@ -1,0 +1,27 @@
+// Delete the relation between project and resullt
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model client {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  email     String   @unique
+  projects  project[]
+}
+
+model project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  outcome     String
+  client_id    Int
+  client      client   @relation(fields: [client_id], references: [id])
+  @@index([name, description, outcome])
+}
+

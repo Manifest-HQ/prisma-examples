@@ -1,0 +1,37 @@
+// add a new relation between  client and result many to one
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model client {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  email     String   @unique
+  projects  project[]
+  id_result Int
+  result    result   @relation(fields: [id_result], references: [id])
+}
+
+model project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  client_id    Int
+  client      client   @relation(fields: [client_id], references: [id])
+  results     result[]
+  @@index([name, description])
+}
+
+model result {
+  id          Int      @id @default(autoincrement())
+  outcome     String
+  project_id   Int
+  project     project  @relation(fields: [project_id], references: [id])
+  client      client[]
+  @@index([outcome])
+}
