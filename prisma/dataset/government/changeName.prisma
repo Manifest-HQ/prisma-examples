@@ -1,0 +1,50 @@
+// change the name of the table civil record to plural
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model civil_records {
+  id                  Int                @id @default(autoincrement())
+  person_id           Int                @unique
+  birth_certificate   String             @unique
+  marriage_certificate String?           
+  death_certificate   String?            
+  person              person             @relation(fields: [person_id], references: [id])
+  @@index([person_id])
+}
+
+model identity_document {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  passport_number   String             @unique
+  national_id       String             @unique
+  driver_license    String?            
+  person            person             @relation(fields: [person_id], references: [id])
+  @@index([person_id])
+}
+
+model electoral_management {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  voter_id          String             @unique
+  election_name     String
+  has_voted         Boolean            @default(false)
+  person            person             @relation(fields: [person_id], references: [id])
+  @@index([person_id])
+}
+
+model person {
+  id                    Int                @id @default(autoincrement())
+  identification_number String             @unique
+  first_name            String
+  last_name             String
+  date_of_birth         DateTime
+  civil_records          civil_records?
+  identity_document     identity_document?
+  electoral_management  electoral_management?
+}

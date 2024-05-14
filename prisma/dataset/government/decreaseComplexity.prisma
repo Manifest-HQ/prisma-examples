@@ -1,0 +1,33 @@
+// make more simple the schema with at least 2 tables
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model person {
+  id                    Int                @id @default(autoincrement())
+  identification_number String             @unique
+  first_name            String
+  last_name             String
+  date_of_birth         DateTime
+  documents             documents[]
+}
+
+model documents {
+  id                Int                @id @default(autoincrement())
+  person_id         Int                @unique
+  birth_certificate String?            @unique
+  marriage_certificate String?
+  death_certificate String?
+  passport_number   String?            @unique
+  national_id       String?            @unique
+  driver_license    String?
+  voter_id          String?            @unique
+  election_name     String?
+  has_voted         Boolean            @default(false)
+  person            person             @relation(fields: [person_id], references: [id])
+}
