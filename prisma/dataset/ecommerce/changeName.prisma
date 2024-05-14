@@ -1,0 +1,75 @@
+// change the name of the table order_item to order_detail
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model product {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  price         Float
+  stock         Int
+  categories    product_category[] 
+  orders        order_detail[]
+
+  @@unique([name])
+}
+
+model category {
+  id       Int             @id @default(autoincrement())
+  name     String
+  products product_category[]
+
+  @@unique([name])
+}
+
+model product_category {
+  product_id Int
+  product   product @relation(fields: [product_id], references: [id])
+  category_id Int
+  category  category @relation(fields: [category_id], references: [id])
+
+  @@id([product_id, category_id])
+}
+
+
+model customer {
+  id      Int     @id @default(autoincrement())
+  name    String
+  email   String  @unique
+  orders  order[]
+}
+
+model order {
+  id         Int         @id @default(autoincrement())
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  status     order_status
+  customer   customer    @relation(fields: [customer_id], references: [id])
+  customer_id Int
+  items      order_detail[]
+}
+
+
+model order_detail {
+  id        Int     @id @default(autoincrement())
+  order     order   @relation(fields: [order_id], references: [id])
+  order_id   Int
+  product   product @relation(fields: [product_id], references: [id])
+  product_id Int
+  quantity  Int
+
+  @@unique([order_id, product_id])
+}
+
+enum order_status {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
