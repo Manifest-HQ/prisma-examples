@@ -1,0 +1,48 @@
+// add an index in data_center location and in resource type
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model data_center {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  location    String
+  servers     server[]
+  incidents   incident[]
+  @@index([location])
+}
+
+model server {
+  id          Int       @id @default(autoincrement())
+  hostname    String    @unique
+  ip_address   String    @unique
+  data_center_id Int
+  data_center  data_center @relation(fields: [data_center_id], references: [id])
+  resources   resource[]
+  incidents   incident[]
+}
+
+model resource {
+  id          Int       @id @default(autoincrement())
+  type        String
+  usage       Float
+  server_id    Int
+  server      server    @relation(fields: [server_id], references: [id])
+  @@index([type])
+}
+
+model incident {
+  id          Int       @id @default(autoincrement())
+  description String
+  resolved    Boolean   @default(false)
+  server_id    Int?
+  server      server?   @relation(fields: [server_id], references: [id])
+  data_center_id Int?
+  data_center  data_center? @relation(fields: [data_center_id], references: [id])
+  @@index([description,resolved])
+}

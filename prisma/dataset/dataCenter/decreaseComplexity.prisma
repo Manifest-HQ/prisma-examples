@@ -1,0 +1,40 @@
+// make more simple the schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model data_center {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  location    String
+  servers     server[]
+  incidents   incident[]
+}
+
+model server {
+  id          Int       @id @default(autoincrement())
+  hostname    String    @unique
+  ip_address   String    @unique
+  data_center_id Int
+  type        String
+  usage       Float
+  data_center  data_center @relation(fields: [data_center_id], references: [id])
+  incidents   incident[]
+}
+
+
+model incident {
+  id          Int       @id @default(autoincrement())
+  description String
+  resolved    Boolean   @default(false)
+  server_id    Int?
+  server      server?   @relation(fields: [server_id], references: [id])
+  data_center_id Int?
+  data_center  data_center? @relation(fields: [data_center_id], references: [id])
+  @@index([description,resolved])
+}
