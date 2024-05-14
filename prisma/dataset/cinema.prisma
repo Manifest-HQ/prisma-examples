@@ -12,7 +12,7 @@ datasource db {
 model movie {
   id          Int       @id @default(autoincrement())
   title       String
-  duration    Int       // Duration in minutes
+  duration    Int      
   showtimes   showtime[]
 }
 

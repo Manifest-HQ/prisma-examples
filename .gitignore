@@ -1,7 +1,7 @@
 node_modules
 # Keep environment variables out of version control
 .env
-
+internal.ipynb
 
 index.js
 package.json

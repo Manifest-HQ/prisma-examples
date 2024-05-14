@@ -22,13 +22,13 @@ model flight {
 model booking {
   id          Int       @id @default(autoincrement())
   flight_id    Int
-  passengerId Int
+  passenger_id Int
   seat        String
   class       String
   flight      flight    @relation(fields: [flight_id], references: [id])
-  passenger   passenger @relation(fields: [passengerId], references: [id])
+  passenger   passenger @relation(fields: [passenger_id], references: [id])
   luggage     luggage[]
-  @@index([passengerId])
+  @@index([passenger_id])
 }
 
 model passenger {
@@ -42,10 +42,10 @@ model passenger {
 
 model luggage {
   id          Int       @id @default(autoincrement())
-  bookingId   Int
+  booking_id   Int
   weight      Float
   description String
-  booking     booking   @relation(fields: [bookingId], references: [id])
+  booking     booking   @relation(fields: [booking_id], references: [id])
 }
 
 model pilot {

@@ -13,7 +13,7 @@ model participant {
   name      String
   email     String    @unique
   tickets   ticket[]
-  sessions  session[] @relation("sessionparticipants")
+  sessions  session_participant[] 
 }
 
 model session {
@@ -23,9 +23,17 @@ model session {
   end_time         DateTime
   speaker_id       Int
   speaker         speaker       @relation(fields: [speaker_id], references: [id])
-  participants    participant[] @relation("sessionparticipants")
+  participants    session_participant[] 
   event_id         Int           
   event           event         @relation(fields: [event_id], references: [id]) 
+}
+
+model session_participant {
+  id Int @id @default(autoincrement())
+  session_id Int 
+  session    session @relation(fields: [session_id], references: [id])
+  participant_id Int
+  participant   participant @relation(fields: [participant_id], references: [id])
 }
 
 model speaker {
