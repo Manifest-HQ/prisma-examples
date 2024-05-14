@@ -1,0 +1,51 @@
+//change the rellation between booking and luggage to one to one 
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model artwork {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String?
+  date              DateTime
+  artist_id          Int
+  artist            artist_artwork[]
+  artwork_exhibitions artwork_exhibition[]
+}
+
+model artist {
+  id        Int       @id @default(autoincrement())
+  name      String
+  biography String?
+  artworks  artist_artwork[]
+}
+
+model artist_artwork {
+  artist_id Int
+  artist    artist @relation(fields: [artist_id], references: [id])
+  artwork_id Int
+  artwork    artwork @relation(fields: [artwork_id], references: [id])
+  @@id([artist_id, artwork_id])
+}
+
+model exhibition {
+  id              Int               @id @default(autoincrement())
+  name            String
+  start           DateTime
+  end             DateTime?
+  artwork_exhibitions artwork_exhibition[]
+}
+
+
+model artwork_exhibition {
+  artwork_id     Int
+  exhibition_id  Int
+  artwork       artwork      @relation(fields: [artwork_id], references: [id])
+  exhibition    exhibition   @relation(fields: [exhibition_id], references: [id])
+  @@id([artwork_id, exhibition_id])
+}

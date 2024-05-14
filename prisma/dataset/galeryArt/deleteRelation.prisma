@@ -1,0 +1,32 @@
+// Delete the relation between artwork and exhibition
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model artwork {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String?
+  date              DateTime
+  artist_id          Int
+  artist            artist              @relation(fields: [artist_id], references: [id])
+}
+
+model artist {
+  id        Int       @id @default(autoincrement())
+  name      String
+  biography String?
+  artworks  artwork[]
+}
+
+model exhibition {
+  id              Int               @id @default(autoincrement())
+  name            String
+  start           DateTime
+  end             DateTime?
+}

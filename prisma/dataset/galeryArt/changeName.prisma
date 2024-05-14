@@ -1,0 +1,44 @@
+// change the name of the table artwork to art_piece and artist to art_creator
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model art_piece {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String?
+  date              DateTime
+  art_creator_id          Int
+  art_creator            art_creator              @relation(fields: [art_creator_id], references: [id])
+  art_piece_exhibitions art_piece_exhibition[]
+}
+
+model art_creator {
+  id        Int       @id @default(autoincrement())
+  name      String
+  biography String?
+  art_pieces  art_piece[]
+}
+
+model exhibition {
+  id              Int               @id @default(autoincrement())
+  name            String
+  start           DateTime
+  end             DateTime?
+  art_piece_exhibitions art_piece_exhibition[]
+}
+
+
+model art_piece_exhibition {
+  art_piece_id     Int
+  exhibition_id  Int
+  art_piece       art_piece      @relation(fields: [art_piece_id], references: [id])
+  exhibition    exhibition   @relation(fields: [exhibition_id], references: [id])
+  @@id([art_piece_id, exhibition_id])
+}
+
