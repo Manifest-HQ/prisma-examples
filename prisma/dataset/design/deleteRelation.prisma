@@ -1,0 +1,38 @@
+// Delete the relation between status and deliverable
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  client_id    Int
+  client      client       @relation(fields: [client_id], references: [id])
+  deliverables deliverable[]
+  @@index([name, description])
+}
+
+model client {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  projects project[]
+}
+
+model deliverable {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  project_id   Int
+  status         String
+  status_description  String
+  project     project  @relation(fields: [project_id], references: [id])
+  @@index([title, description])
+}
+
